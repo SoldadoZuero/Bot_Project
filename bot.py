@@ -19,5 +19,19 @@ async def get_OAuth():
 
         return response.json()
 
+
+async def firstCall():
+    async with httpx.AsyncClient() as client:
+        bearer_token = await get_OAuth()
+        response = await client.post(
+            url="https://api.twitch.tv/helix/users?login=twitchdev",
+            headers={
+                "Authorization": f"Bearer {bearer_token['access_token']}",
+                "Client-Id": os.environ.get('CLIENT_ID') or "",
+            }
+        )
+
+        return response.json()
+
 if __name__ == "__main__":
-    print(asyncio.run(get_OAuth()))
+    print(asyncio.run(firstCall()))
