@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Token recebido</title>
+</head>
+<body>
+  <h1>Processando token...</h1>
+  <script>
+    // Pega o hash da URL
+    const hash = window.location.hash.substring(1); // remove o "#"
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+    const tokenType = params.get("token_type");
+    const scope = params.get("scope");
+
+    if (accessToken) {
+      // Envia pro backend
+      fetch("/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          access_token: accessToken,
+          token_type: tokenType,
+          scope: scope
+        })
+      }).then(() => {
+        document.body.innerHTML = "<h2>Token recebido com sucesso! Pode fechar essa aba 😎</h2>";
+      }).catch(err => {
+        document.body.innerHTML = "<h2>Erro ao enviar token! 😵</h2>";
+        console.error(err);
+      });
+    } else {
+      document.body.innerHTML = "<h2>Token não encontrado na URL 😢</h2>";
+    }
+  </script>
+</body>
+</html>
